@@ -21,14 +21,14 @@ import io.underdark.util.nslogger.NSLoggerAdapter;
 public class Node implements TransportListener
 {
     private boolean running;
-    private SyncScores activity;
+    private MainActivity activity;
     private long nodeId;
     private Transport transport;
 
     private ArrayList<Link> links = new ArrayList<>();
     private int framesCount = 0;
 
-    public Node(SyncScores activity)
+    public Node(MainActivity activity)
     {
         this.activity = activity;
 
@@ -85,9 +85,6 @@ public class Node implements TransportListener
         if(links.isEmpty())
             return;
 
-        ++framesCount;
-        activity.refreshFrames();
-
         for(Link link : links)
             link.sendFrame(frameData);
     }
@@ -102,35 +99,38 @@ public class Node implements TransportListener
     @Override
     public void transportNeedsActivity(Transport transport, ActivityCallback callback)
     {
-        callback.accept(activity);
+
     }
 
     @Override
     public void transportLinkConnected(Transport transport, Link link)
     {
+        Toast toast = Toast.makeText(activity.getApplicationContext(), "New Link Made", Toast.LENGTH_SHORT);
+        toast.show();
         links.add(link);
-        activity.refreshPeers(link);
+        activity.g.refreshPeers(link);
     }
 
     @Override
     public void transportLinkDisconnected(Transport transport, Link link)
     {
+        Toast toast = Toast.makeText(activity.getApplicationContext(), "Link Lost", Toast.LENGTH_SHORT);
+        toast.show();
         links.remove(link);
-        activity.refreshPeers(null);
+        activity.g.refreshPeers(null);
 
         if(links.isEmpty())
         {
             framesCount = 0;
-            activity.refreshFrames();
         }
     }
 
     @Override
     public void transportLinkDidReceiveFrame(Transport transport, Link link, byte[] frameData)
     {
-        ++framesCount;
-        activity.refreshFrames();
-        activity.updateScores(frameData);
+        activity.g.updateScores(frameData);
+        Toast toast = Toast.makeText(activity.getApplicationContext(), "Got some scores", Toast.LENGTH_SHORT);
+        toast.show();
     }
     //endregion
 } // Node

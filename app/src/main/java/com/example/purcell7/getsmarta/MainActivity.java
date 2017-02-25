@@ -1,23 +1,34 @@
 package com.example.purcell7.getsmarta;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
+    Globals g;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Globals g = (Globals)getApplication();
+        g = (Globals)getApplication();
+
+        g.node = new Node(this);
 
         // reset quest counter
         g.Qcounter=0;
 
-        g.deviceIDa="Jan";
+        g.deviceIDa="Player #" + Math.abs(new Random().nextInt()%100);
 
         if (g.corrects.size()==0) {
             g.Qstart=0;
@@ -29,16 +40,21 @@ public class MainActivity extends AppCompatActivity {
             g.makea3s();
             g.makeCorrects();
         }
-
-
-        // remove when done
-        if (g.ridescoretable.size()<2) {
-            g.makescores();
-            g.makeIDs();
-            g.maketimes();
-            //
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            // Android M Permission check
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    }
+                });
+                builder.show();
+            }
         }
-
 
         setContentView(R.layout.activity_main);
 
@@ -76,5 +92,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("PERMISSION", "coarse location permission granted");
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Functionality limited");
+                    builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                        }
+                    });
+                    builder.show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        g.node.start();
     }
 }

@@ -31,24 +31,18 @@ public class LocalLeaderboard extends AppCompatActivity {
 
         Globals g = (Globals)getApplication();
        // int numScores=3;
-        int numScores=g.ridescoretable.size();
+        int numScores=g.scores.size();
 
         String leaders="";
-        String IDname;
-        int score;
 
         for (int i=(numScores-1);i>=0;i--){
-            IDname=g.IDridescoretable.get(i);
-            score=g.ridescoretable.get(i);
-            String row=Integer.toString(numScores-i)+"). "+IDname+"  "+Integer.toString(score)+"\n";
+            Score score=g.scores.get(i);
+            String row=Integer.toString(numScores-i)+"). "+score.name+"  "+score.score+" " + score.date + "\n";
             leaders+=row;
         }
 
         TextView RideLeaders = (TextView) findViewById(R.id.RideLeadersTxt);
         RideLeaders.setText(leaders);
-
-
-
     }
 
 }

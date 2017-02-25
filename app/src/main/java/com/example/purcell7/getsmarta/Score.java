@@ -10,44 +10,49 @@ import java.util.Random;
 /**
  * Created by Purcell7 on 2/24/2017.
  */
-public class Score {
+public class Score implements Comparable<Score>{
     public int score;
-    public Date date;
-    public long userId;
+    public String date;
+    public String name;
     Random rand = new Random();
 
-    public Score(int score, long userId){
+    public Score(int score, String name){
         this.score = score;
-        this.userId = userId;
-        this.date = new Date();
+        this.name = name;
+        this.date = new Date().toString();
     }
 
     public Score(byte[] bytes){
         String bytesToString = new String(bytes);
-        Log.i("Score From Bytes", bytesToString);
+        //Log.i("Score From Bytes", bytesToString);
         String[] splitBytesToString = bytesToString.split("-");
         this.score = Integer.parseInt(splitBytesToString[0]);
-        this.userId = Long.parseLong(splitBytesToString[1]);
-        this.date = new Date(splitBytesToString[2]);
+        this.name = splitBytesToString[1];
+        this.date = splitBytesToString[2];
     }
 
     public Score(){
         this.score = Math.abs(rand.nextInt()%100);
-        this.userId = Math.abs(rand.nextLong()%1000);
-        this.date = new Date();
+        this.name = "Guy #"+Math.abs(rand.nextInt()%100);
+        this.date = new Date().toString();
     }
 
 
     public byte[] convertToBytes() throws UnsupportedEncodingException {
-        String stuffToBecomeBytes = score + "-"+userId+"-"+date;
+        String stuffToBecomeBytes = score + "-"+name+"-"+date;
         return stuffToBecomeBytes.getBytes("UTF-8");
     }
 
     public String toString(){
-        return "Score: " + score + " user: "+userId+" date: "+date;
+        return "Score: " + score + " user: "+name+" date: "+date;
     }
 
     public boolean equals(Score score){
-        return score.date.equals(this.date) && score.score==this.score && score.userId==this.userId;
+        return score.date.equals(this.date) && score.score==this.score && score.name.equals(this.name);
+    }
+
+    @Override
+    public int compareTo(Score another) {
+        return this.score - another.score;
     }
 }

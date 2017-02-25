@@ -1,13 +1,19 @@
 package com.example.purcell7.getsmarta;
 
 import android.app.Application;
+import android.util.Log;
+import android.view.View;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
+
+import io.underdark.transport.Link;
 
 /**
  * Created by C on 2/24/2017.
@@ -18,124 +24,111 @@ public class Globals extends Application {
     // ==== scores ====
     public static String deviceIDa;
 
-    public List<String> IDridescoretable= new Vector<String>();
-
-    public List<Long> Tridescoretable= new Vector<Long>();
-    //public List<int> Tstationscoretable= new Vector<>();
-    public List<Long> Tmyscoretable= new Vector<Long>();
-
     public int lastscore, scorenow;
-    public List<Integer> ridescoretable= new Vector<Integer>();
-    //public List<int> stationscoretable= new Vector<>();
-    public List<Integer> myscoretable= new Vector<Integer>();
+    public Node node;
 
-
-
-    public void makescores() {
-        ridescoretable.add(240);
-        ridescoretable.add(300);
-        ridescoretable.add(540);
-    }
-
-
-    public void maketimes() {
-        Tridescoretable.add((long)9304);
-        Tridescoretable.add((long)493043);
-        Tridescoretable.add((long) 930403);
-    }
-
-
-
-    public void makeIDs() {
-        IDridescoretable.add("Joe");
-        IDridescoretable.add("David");
-        IDridescoretable.add("Cate");
-    }
-
-    public void savescore() {
-        int rideloc=whereinsertscore(ridescoretable,scorenow);
-        ridescoretable.add(rideloc,scorenow);
-        IDridescoretable.add(rideloc, deviceIDa);
-        long T= System.currentTimeMillis();
-        Tridescoretable.add(rideloc,(long)T);
-
-
-        int myloc=whereinsertscore(myscoretable,scorenow);
-        myscoretable.add(rideloc,scorenow);
-        Tmyscoretable.add(myloc, (long)T);
-
-    }
-
-
-    public int whereinsertscore(List<Integer> table, int score){
-        int loc=0;
-        loc=Math.abs(Collections.binarySearch(table, score)+1);
-
-        return loc;
-    }
-
+    List<Score> scores = new ArrayList<Score>();
 
     // ===== questions and answers ====
     public int Qstart, Qnow, Qcounter=0;
 
-   public List<String> questions= new ArrayList<String>();
+    public List<String> questions= new ArrayList<String>();
     public List<String> anslist1= new ArrayList<String>();
     public List<String> anslist2= new ArrayList<String>();
     public List<String> anslist3= new ArrayList<String>();
     public List<Integer> corrects= new ArrayList<Integer>();
 
+    public void savescore() {
+        Collections.sort(scores);
+        int rideloc=whereinsertscore(scores,scorenow);
+        Score newScore = new Score(scorenow, deviceIDa);
+        scores.add(rideloc,newScore);
+        try {
+            sendScore(newScore);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int whereinsertscore(List<Score> scores, int score){
+        int loc=0;
+        loc=Math.abs(Collections.binarySearch(scores, new Score(score,""))+1);
+
+        return loc;
+    }
+
+    public void sendScore(Score score) throws UnsupportedEncodingException {
+        node.broadcastFrame(score.convertToBytes());
+    }
+
+    public void refreshPeers(Link link)
+    {
+        //peersTextView.setText(node.getLinks().size() + " connected");
+        if(link != null){
+            try {
+                node.sendAllScores(scores, link);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void updateScores(byte[] newScoreFrameData)
+    {
+        if(newScoreFrameData.length > 0){
+            Score newScore = new Score(newScoreFrameData);
+            Log.i("Update Scores", newScore.toString());
+            //O(n) checking for duplicates!!!!
+            if(!scores.contains(newScore)){
+                Log.i("Update Scores", "Does not contain, so add and propagate");
+                scores.add(newScore);
+                try {
+                    sendScore(newScore);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public void makeQs() {
-        questions.add("What");
-        questions.add("Who");
-        questions.add("When");
-        questions.add("Where");
-        questions.add("Why");
-        questions.add("How");
+        questions.add("What was the first Ice Hockey puck made of?");
+        questions.add("In Texas it's illegal to swear in front of a what?");
+        questions.add("What does the Latin phrase 'caveat emptor' mean?");
+        questions.add("What do you call the smell which wine gives off?");
+        questions.add("How many strings does a cello have?");
+        questions.add("Name the largest freshwater lake in the world?");
     }
-
-
-
     public void makea1s() {
-        anslist1.add("What");
-        anslist1.add("Who");
-        anslist1.add("When");
-        anslist1.add("Where");
-        anslist1.add("Why");
-        anslist1.add("How");
+        anslist1.add("A piece of wood");
+        anslist1.add("A corpse");
+        anslist1.add("Seize the day");
+        anslist1.add("Bouquet");
+        anslist1.add("5");
+        anslist1.add("Lake Superior");
     }
-
-
-
-
     public void makea2s() {
-        anslist2.add("What2");
-        anslist2.add("Who2");
-        anslist2.add("When2");
-        anslist2.add("Where2");
-        anslist2.add("Why2");
-        anslist2.add("How2");
+        anslist2.add("Frozen cow manure");
+        anslist2.add("Cows");
+        anslist2.add("I came, I saw, I conquered");
+        anslist2.add("Provenance");
+        anslist2.add("4");
+        anslist2.add("The Red Sea");
     }
-
-
-
     public void makea3s() {
-        anslist3.add("What3");
-        anslist3.add("Who3");
-        anslist3.add("When3");
-        anslist3.add("Where3");
-        anslist3.add("Why3");
-        anslist3.add("How3");
+        anslist3.add("A hubcap");
+        anslist3.add("The clergy");
+        anslist3.add("Buyer beware");
+        anslist3.add("Vineyard");
+        anslist3.add("6");
+        anslist3.add("Lake Lanier");
     }
-
-
-
     public void makeCorrects() {
-        corrects.add(1);
         corrects.add(2);
+        corrects.add(1);
         corrects.add(3);
         corrects.add(1);
         corrects.add(2);
-        corrects.add(2);
+        corrects.add(1);
     }
-
 }

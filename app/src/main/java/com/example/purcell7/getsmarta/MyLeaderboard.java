@@ -28,7 +28,7 @@ public class MyLeaderboard extends AppCompatActivity {
 
         Globals g = (Globals)getApplication();
         // int numScores=3;
-        int numScores=g.myscoretable.size();
+        int numScores=g.scores.size();
 
         String leaders="";
         String IDname;
@@ -36,7 +36,7 @@ public class MyLeaderboard extends AppCompatActivity {
 
         for (int i=(numScores-1);i>=0;i--){
             IDname=g.deviceIDa;
-            score=g.myscoretable.get(i);
+            score=g.scores.get(i).score;
             String row=Integer.toString(numScores-i)+"). "+IDname+"  "+Integer.toString(score)+"\n";
             leaders+=row;
         }
