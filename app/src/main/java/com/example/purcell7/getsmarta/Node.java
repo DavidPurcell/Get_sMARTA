@@ -40,7 +40,7 @@ public class Node implements TransportListener
         if(nodeId < 0)
             nodeId = -nodeId;
 
-        EnumSet<TransportKind> kinds = EnumSet.of(TransportKind.BLUETOOTH, TransportKind.WIFI);
+        EnumSet<TransportKind> kinds = EnumSet.of(TransportKind.BLUETOOTH);
 
         this.transport = Underdark.configureTransport(
                 234235,
@@ -128,9 +128,10 @@ public class Node implements TransportListener
     @Override
     public void transportLinkDidReceiveFrame(Transport transport, Link link, byte[] frameData)
     {
-        activity.g.updateScores(frameData);
-        Toast toast = Toast.makeText(activity.getApplicationContext(), "Got some scores", Toast.LENGTH_SHORT);
-        toast.show();
+        if(activity.g.updateScores(frameData)){
+            Toast toast = Toast.makeText(activity.getApplicationContext(), "Got some scores", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
     //endregion
 } // Node

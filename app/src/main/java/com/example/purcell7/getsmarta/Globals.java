@@ -73,29 +73,28 @@ public class Globals extends Application {
         }
     }
 
-    public void updateScores(byte[] newScoreFrameData)
+    public boolean updateScores(byte[] newScoreFrameData)
     {
         if(newScoreFrameData.length > 0){
             Score newScore = new Score(newScoreFrameData);
             Log.i("Update Scores", newScore.toString());
             //O(n) checking for duplicates!!!!
-            boolean contains = false;
             for(Score s:scores){
                 if(s.equals(newScore)){
-                    contains = true;
+                    return false;
                 }
             }
-            if(!contains){
-                Log.i("Update Scores", "Does not contain, so add and propagate");
-                scores.add(newScore);
-                Collections.sort(scores);
-                try {
-                    sendScore(newScore);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+            Log.i("Update Scores", "Does not contain, so add and propagate");
+            scores.add(newScore);
+            Collections.sort(scores);
+            try {
+                sendScore(newScore);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+            return true;
         }
+        return false;
     }
 
     public void makeQs() {

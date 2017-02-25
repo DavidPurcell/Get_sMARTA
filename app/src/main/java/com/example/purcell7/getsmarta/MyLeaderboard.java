@@ -35,17 +35,16 @@ public class MyLeaderboard extends AppCompatActivity {
         int score;
 
         for (int i=(numScores-1);i>=0;i--){
-            IDname=g.deviceIDa;
-            score=g.scores.get(i).score;
-            String row=Integer.toString(numScores-i)+"). "+IDname+"  "+Integer.toString(score)+"\n";
-            leaders+=row;
+            if(g.scores.get(i).name.equals(g.deviceIDa)){
+                IDname=g.deviceIDa;
+                score=g.scores.get(i).score;
+                String row=Integer.toString(numScores-i)+"). "+IDname+"  "+Integer.toString(score)+"\n";
+                leaders+=row;
+            }
         }
 
         TextView MyLeaders = (TextView) findViewById(R.id.MyLeadersTxt);
         MyLeaders.setText(leaders);
-
-
-
     }
 
 }

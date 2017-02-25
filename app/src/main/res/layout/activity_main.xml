@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.purcell7.getsmarta.MainActivity">
+    tools:context="com.example.c.dvorak.MainActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/marta4">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Get sMARTA!"
-        android:id="@+id/textView" />
+
 
     <Button
         android:text="Play!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="146dp"
+        android:layout_marginTop="330dp"
         android:id="@+id/button_a"
+        android:background="@color/martablue"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:text="Leaderboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="246dp"
+        android:layout_marginTop="390dp"
         android:id="@+id/button_b"
+        android:background="@color/martayellow"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:text="My High Scores"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="346dp"
+        android:layout_marginTop="446dp"
+        android:background="@color/martared"
+        android:textSize="20sp"
+        android:textColor="@color/black"
         android:id="@+id/button_c"
         android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New User"
-        android:id="@+id/button"
-        android:layout_alignBaseline="@+id/button_c"
-        android:layout_alignBottom="@+id/button_c"
-        android:layout_toStartOf="@+id/button_c"
-        android:onClick="createNewUser" />
 
 </RelativeLayout>
