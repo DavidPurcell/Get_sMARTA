@@ -23,12 +23,16 @@ public class MainActivity extends AppCompatActivity {
 
         g = (Globals)getApplication();
 
-        g.node = new Node(this);
+        if(g.node == null){
+            g.node = new Node(this);
+        }
+
+        if(g.deviceIDa == null || g.deviceIDa.equals("")){
+            createNewUser(null);
+        }
 
         // reset quest counter
         g.Qcounter=0;
-
-        g.deviceIDa="Player #" + Math.abs(new Random().nextInt()%100);
 
         if (g.corrects.size()==0) {
             g.Qstart=0;
@@ -117,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    public void createNewUser(View view){
+        g.deviceIDa="Player #" + Math.abs(new Random().nextInt()%1000)+1;
+        Toast.makeText(this.getApplicationContext(), g.deviceIDa, Toast.LENGTH_SHORT).show();
     }
 
     @Override

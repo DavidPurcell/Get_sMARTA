@@ -79,9 +79,16 @@ public class Globals extends Application {
             Score newScore = new Score(newScoreFrameData);
             Log.i("Update Scores", newScore.toString());
             //O(n) checking for duplicates!!!!
-            if(!scores.contains(newScore)){
+            boolean contains = false;
+            for(Score s:scores){
+                if(s.equals(newScore)){
+                    contains = true;
+                }
+            }
+            if(!contains){
                 Log.i("Update Scores", "Does not contain, so add and propagate");
                 scores.add(newScore);
+                Collections.sort(scores);
                 try {
                     sendScore(newScore);
                 } catch (UnsupportedEncodingException e) {
@@ -130,5 +137,11 @@ public class Globals extends Application {
         corrects.add(1);
         corrects.add(2);
         corrects.add(1);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        node.stop();
     }
 }
